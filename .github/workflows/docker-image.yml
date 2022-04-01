@@ -2,7 +2,7 @@ name: NodeJS CI/CD
 
 on:
   push:
-    branches: [ Develop ]
+    branches: [ master ]
 
 jobs:
   CI:
