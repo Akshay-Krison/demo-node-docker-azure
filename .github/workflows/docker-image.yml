@@ -1,18 +1,45 @@
-name: Docker Image CI
+name: NodeJS CI/CD
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    branches: [ Develop ]
 
 jobs:
-
-  build:
-
+  CI:
+    name: CI Pipeline
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        node-version: ['16.x']
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
+      # Initialize Node.js
+      - name: Install Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      # Install project dependencies, test and build
+      - name: Install dependencies
+        run: npm install
+      - name: CI
+        run: npm ci
+#       - name: Run Node Test
+#         run: npm test
+  docker-deploy:
+    needs: [CI]
+    name: Push the Image to Docker Hub
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: docker login
+      env:
+        DOCKER_USER: ${{secrets.DOCKER_USER}}
+        DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+      run: |
+        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD 
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      run: docker build . --file Dockerfile --tag medipapel/axon-site-api:latest
+      
+    - name: Docker Push
+      run: docker push akshaykrisondevops/demo-node-docker-azure:latest
