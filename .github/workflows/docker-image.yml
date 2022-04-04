@@ -43,3 +43,17 @@ jobs:
       
     - name: Docker Push
       run: docker push akshaykrisondevops/demo-node-docker-azure:latest
+  deploy:
+    needs: [CI, docker-deploy]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Deploy source-code
+        uses: appleboy/ssh-action@master
+        env:
+          HOST: ${{ secrets.SSH_HOST }}
+          USERNAME: ${{ secrets.SSH_USERNAME }}
+          PORT: 22
+          KEY: ${{ secrets.SSH_KEY }}
+          script: |
+            sudo apt-get update
