@@ -57,3 +57,5 @@ jobs:
           PORT: 22
           script: |
             sudo apt-get update
+            docker pull akshaykrisondevops/demo-node-docker-azure:latest
+            docker images
