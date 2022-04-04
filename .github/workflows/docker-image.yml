@@ -53,7 +53,7 @@ jobs:
         env:
           HOST: ${{ secrets.SSH_HOST }}
           USERNAME: ${{ secrets.SSH_USERNAME }}
+          PASSWORD: ${{ secrets.SSH_PASSWORD }}
           PORT: 22
-          KEY: ${{ secrets.SSH_KEY }}
           script: |
             sudo apt-get update
